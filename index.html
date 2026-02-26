@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Leadership Styles Analyzer</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+
+<div class="container">
+
+    <div class="sidebar">
+        <h2>Leadership</h2>
+        <p>Dashboard</p>
+        <p>Assessment</p>
+        <p>Insights</p>
+    </div>
+
+    <div class="main">
+
+        <h1>Leadership Styles Analyzer</h1>
+
+        <div id="assessment"></div>
+
+        <button onclick="calculate()">Ver Resultados</button>
+
+        <div id="results" class="hidden">
+
+            <div class="cards">
+                <div class="card" id="amableCard"></div>
+                <div class="card" id="analiticoCard"></div>
+                <div class="card" id="emprendedorCard"></div>
+                <div class="card" id="expresivoCard"></div>
+            </div>
+
+            <canvas id="radarChart"></canvas>
+
+            <canvas id="quadrantChart"></canvas>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
