@@ -42,7 +42,7 @@ const questions = [
 
 ];
 
-const scale = ["Nunca", "Rara vez", "A veces", "Frecuentemente", "Siempre"];
+const scale = ["Nunca","Rara vez","A veces","Frecuentemente","Siempre"];
 
 let current = 0;
 let answers = [];
