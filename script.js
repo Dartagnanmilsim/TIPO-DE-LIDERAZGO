@@ -1,8 +1,7 @@
 // =====================
-// (TODO LO QUE YA TENÍAS)
+// PREGUNTAS (SIN CAMBIOS)
 // =====================
 
-// preguntas iguales (no cambiadas)
 const questions = [
   { text: "Antes de tomar decisiones importantes considero el impacto en las personas.", style: "Afable" },
   { text: "Prefiero resolver conflictos mediante diálogo y consenso.", style: "Afable" },
@@ -78,7 +77,32 @@ function updateProgress() {
 }
 
 // =====================
-// NUEVO ANALISIS DETALLADO DE PUNTAJES
+// NUEVO — INTERPRETACIÓN EJECUTIVA
+// =====================
+
+function executiveSummary(primary, secondary){
+
+return `
+Tu estilo predominante es ${primary} con una influencia importante ${secondary}.
+
+Esto significa que tu forma natural de liderar combina la orientación principal de ${primary} con capacidades complementarias de ${secondary}.
+
+FORTALEZA CENTRAL
+Tiendes a tomar decisiones y actuar desde el motor psicológico del estilo ${primary}, pero utilizas el estilo ${secondary} para equilibrar tu comportamiento cuando el contexto lo requiere.
+
+CUÁNDO BRILLAS MÁS
+Situaciones donde necesitas combinar resultados con criterio, acción con análisis o personas con objetivos.
+
+RIESGO PRINCIPAL
+Sobrecarga por intentar mantener múltiples enfoques simultáneamente o conflicto interno entre rapidez y profundidad.
+
+VALOR DIFERENCIAL
+Tu capacidad de adaptación conductual es mayor que la de perfiles de un solo estilo.
+`;
+}
+
+// =====================
+// PERFIL DETALLADO
 // =====================
 
 function buildProfileDetails(scores){
@@ -91,17 +115,10 @@ function buildProfileDetails(scores){
     percentages[key] = Math.round((scores[key]/total)*100);
   });
 
-  const intensity = (value)=>{
-    if(value >= 75) return "Muy alto";
-    if(value >= 55) return "Alto";
-    if(value >= 35) return "Moderado";
-    return "Bajo";
-  };
-
-  let text = "INFORMACIÓN DETALLADA DEL PERFIL\n\n";
+  let text = "";
 
   Object.keys(scores).forEach(style=>{
-    text += `${style}: ${scores[style]} puntos (${percentages[style]}%) — Nivel ${intensity(percentages[style])}\n`;
+    text += `${style}: ${scores[style]} puntos (${percentages[style]}%)\n`;
   });
 
   return text;
@@ -142,6 +159,7 @@ function showResult(scores, dominant, secondary){
 
   resultEl.classList.remove("hidden");
 
+  const executive = executiveSummary(dominant, secondary);
   const profileDetails = buildProfileDetails(scores);
 
   resultEl.innerHTML = `
@@ -149,6 +167,8 @@ function showResult(scores, dominant, secondary){
   <div class="result-box">
 
     <h2>${dominant} — ${secondary}</h2>
+
+    <p>${executive}</p>
 
     <p><strong>Datos del perfil:</strong></p>
     <pre>${profileDetails}</pre>
@@ -226,7 +246,5 @@ async function downloadPDF(){
 
   doc.save("resultado_liderazgo.pdf");
 }
-
-// =====================
 
 showQuestion();
