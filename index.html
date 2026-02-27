@@ -1,53 +1,32 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Leadership Styles Analyzer</title>
-
-<link rel="stylesheet" href="style.css">
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+  <meta charset="UTF-8">
+  <title>Test de Estilo de Liderazgo</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
 
-    <div class="sidebar">
-        <h2>Leadership</h2>
-        <p>Dashboard</p>
-        <p>Assessment</p>
-        <p>Insights</p>
+  <div class="card">
+
+    <h1>Test de Liderazgo</h1>
+
+    <div class="progress-bar">
+      <div id="progress"></div>
     </div>
 
-    <div class="main">
+    <h2 id="question"></h2>
 
-        <h1>Leadership Styles Analyzer</h1>
+    <div id="options" class="options"></div>
 
-        <div id="assessment"></div>
+    <div id="result" class="result hidden"></div>
 
-        <button onclick="calculate()">Ver Resultados</button>
-
-        <div id="results" class="hidden">
-
-            <div class="cards">
-                <div class="card" id="amableCard"></div>
-                <div class="card" id="analiticoCard"></div>
-                <div class="card" id="emprendedorCard"></div>
-                <div class="card" id="expresivoCard"></div>
-            </div>
-
-            <canvas id="radarChart"></canvas>
-
-            <canvas id="quadrantChart"></canvas>
-
-        </div>
-
-    </div>
+  </div>
 
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>
