@@ -1,45 +1,23 @@
 const questions = [
-
-  // Afable
   { text: "Me preocupo por el bienestar emocional de mi equipo.", style: "Afable" },
   { text: "Prefiero mantener un ambiente armonioso antes que confrontar.", style: "Afable" },
-  { text: "Escucho a los demás antes de tomar decisiones importantes.", style: "Afable" },
-  { text: "Las personas me consideran cercano y accesible.", style: "Afable" },
+  { text: "Escucho antes de tomar decisiones.", style: "Afable" },
   { text: "Soy paciente cuando alguien comete errores.", style: "Afable" },
-  { text: "Busco consenso antes de avanzar en proyectos importantes.", style: "Afable" },
-  { text: "Me enfoco en construir relaciones de confianza.", style: "Afable" },
-  { text: "Prefiero colaborar antes que competir.", style: "Afable" },
 
-  // Expresivo
-  { text: "Me gusta motivar a otros con ideas y visión de futuro.", style: "Expresivo" },
-  { text: "Disfruto liderar reuniones o hablar frente a grupos.", style: "Expresivo" },
-  { text: "Transmito entusiasmo cuando explico proyectos.", style: "Expresivo" },
-  { text: "Propongo nuevas ideas con frecuencia.", style: "Expresivo" },
-  { text: "Me siento cómodo siendo el centro de atención cuando es necesario.", style: "Expresivo" },
-  { text: "Inspiro a otros a pensar en grande.", style: "Expresivo" },
-  { text: "Prefiero entornos dinámicos y creativos.", style: "Expresivo" },
-  { text: "Mi energía suele contagiar a los demás.", style: "Expresivo" },
+  { text: "Tomo decisiones basadas en datos.", style: "Analitico" },
+  { text: "Me gusta planificar antes de actuar.", style: "Analitico" },
+  { text: "Analizo riesgos antes de decidir.", style: "Analitico" },
+  { text: "Soy exigente con la calidad.", style: "Analitico" },
 
-  // Analítico
-  { text: "Tomo decisiones basadas en datos y evidencia.", style: "Analítico" },
-  { text: "Me gusta planificar antes de actuar.", style: "Analítico" },
-  { text: "Presto atención a los detalles para evitar errores.", style: "Analítico" },
-  { text: "Prefiero procesos claros y organizados.", style: "Analítico" },
-  { text: "Me siento cómodo analizando información compleja.", style: "Analítico" },
-  { text: "Evalúo riesgos antes de decidir.", style: "Analítico" },
-  { text: "Soy exigente con la calidad del trabajo.", style: "Analítico" },
-  { text: "Analizo varias opciones antes de elegir una.", style: "Analítico" },
+  { text: "Me enfoco en resultados rápidos.", style: "Emprendedor" },
+  { text: "Tomo decisiones bajo presión.", style: "Emprendedor" },
+  { text: "Disfruto retos y competencia.", style: "Emprendedor" },
+  { text: "Voy directo al punto.", style: "Emprendedor" },
 
-  // Ejecutor
-  { text: "Me enfoco en lograr objetivos rápidamente.", style: "Ejecutor" },
-  { text: "Tomo decisiones con seguridad incluso bajo presión.", style: "Ejecutor" },
-  { text: "Prefiero actuar que analizar demasiado.", style: "Ejecutor" },
-  { text: "Me siento cómodo liderando situaciones difíciles.", style: "Ejecutor" },
-  { text: "Exijo alto desempeño de mi equipo.", style: "Ejecutor" },
-  { text: "Me frustra la lentitud o la indecisión.", style: "Ejecutor" },
-  { text: "Disfruto los retos y la competencia.", style: "Ejecutor" },
-  { text: "Voy directo al punto cuando comunico algo importante.", style: "Ejecutor" }
-
+  { text: "Me gusta motivar a otros.", style: "Expresivo" },
+  { text: "Transmito entusiasmo.", style: "Expresivo" },
+  { text: "Propongo nuevas ideas.", style: "Expresivo" },
+  { text: "Inspiro a pensar en grande.", style: "Expresivo" }
 ];
 
 const scale = ["Nunca","Rara vez","A veces","Frecuentemente","Siempre"];
@@ -69,11 +47,8 @@ function showQuestion() {
       answers[current] = index + 1;
       current++;
 
-      if (current < questions.length) {
-        showQuestion();
-      } else {
-        calculateResult();
-      }
+      if (current < questions.length) showQuestion();
+      else calculateResult();
 
       updateProgress();
     };
@@ -85,17 +60,16 @@ function showQuestion() {
 }
 
 function updateProgress() {
-  const percent = (current / questions.length) * 100;
-  progressEl.style.width = percent + "%";
+  progressEl.style.width = (current / questions.length) * 100 + "%";
 }
 
 function calculateResult() {
 
   const scores = {
     Afable: 0,
-    Expresivo: 0,
-    Analítico: 0,
-    Ejecutor: 0
+    Analitico: 0,
+    Emprendedor: 0,
+    Expresivo: 0
   };
 
   answers.forEach((value, index) => {
@@ -103,12 +77,47 @@ function calculateResult() {
   });
 
   const dominant = Object.entries(scores)
-    .sort((a, b) => b[1] - a[1])[0][0];
+    .sort((a,b)=>b[1]-a[1])[0][0];
 
-  showResult(dominant, scores);
+  showResult(scores, dominant);
 }
 
-function showResult(style, scores) {
+function getAnalysis(style){
+
+  const analysis = {
+
+    Afable: "Tu liderazgo se orienta a las personas, confianza y estabilidad emocional del equipo.",
+
+    Analitico: "Tu liderazgo se basa en lógica, planificación y decisiones racionales.",
+
+    Emprendedor: "Tu liderazgo está enfocado en acción, resultados y logro de objetivos.",
+
+    Expresivo: "Tu liderazgo se caracteriza por inspiración, comunicación y visión."
+  };
+
+  return analysis[style];
+}
+
+function buildPrompt(style){
+
+return `Actúa como coach ejecutivo experto.
+
+Mi estilo de liderazgo predominante es ${style}.
+
+Quiero un análisis profundo que incluya:
+
+- Fortalezas naturales
+- Riesgos y puntos ciegos
+- Cómo lidero equipos
+- Cómo me perciben
+- Recomendaciones para evolucionar
+- Qué tipo de roles de liderazgo son ideales
+
+Entrega un análisis profesional.`;
+
+}
+
+function showResult(scores, dominant){
 
   questionEl.style.display = "none";
   optionsEl.style.display = "none";
@@ -116,21 +125,44 @@ function showResult(style, scores) {
   resultEl.classList.remove("hidden");
 
   resultEl.innerHTML = `
-    <h2>Tu estilo predominante es:</h2>
-    <h3>${style}</h3>
+  
+  <h2>Resultado: ${dominant}</h2>
 
-    <p><strong>Puntajes:</strong></p>
-    <ul>
-      <li>Afable: ${scores.Afable}</li>
-      <li>Expresivo: ${scores.Expresivo}</li>
-      <li>Analítico: ${scores.Analítico}</li>
-      <li>Ejecutor: ${scores.Ejecutor}</li>
-    </ul>
+  <div class="result-box">
+    <p>${getAnalysis(dominant)}</p>
 
-    <button class="restart" onclick="location.reload()">
-      Repetir Test
-    </button>
+    <canvas id="chart"></canvas>
+
+    <h3>Prompt personalizado</h3>
+    <div class="copy-box" id="promptBox">${buildPrompt(dominant)}</div>
+
+    <button class="copy" onclick="copyPrompt()">Copiar Prompt</button>
+
+  </div>
+  
   `;
+
+  createChart(scores);
+}
+
+function createChart(scores){
+
+  new Chart(document.getElementById("chart"), {
+    type: 'radar',
+    data: {
+      labels: Object.keys(scores),
+      datasets: [{
+        label: 'Resultado',
+        data: Object.values(scores)
+      }]
+    }
+  });
+}
+
+function copyPrompt(){
+  const text = document.getElementById("promptBox").innerText;
+  navigator.clipboard.writeText(text);
+  alert("Prompt copiado");
 }
 
 showQuestion();
