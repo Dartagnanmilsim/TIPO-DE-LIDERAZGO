@@ -1,32 +1,38 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Test de Liderazgo</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Test de Liderazgo</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="container">
+<div class="app">
 
   <div class="card">
 
-    <h1>Test de Liderazgo</h1>
+    <h1>Test de Estilo de Liderazgo</h1>
 
-    <div class="progress-bar">
+    <div class="progress-container">
       <div id="progress"></div>
     </div>
 
-    <h2 id="question"></h2>
+    <div id="questionContainer">
 
-    <div id="options" class="options"></div>
+      <h2 id="question"></h2>
 
-    <div id="result" class="result hidden"></div>
+      <div id="options" class="options"></div>
+
+    </div>
+
+    <div id="result" class="hidden"></div>
 
   </div>
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="script.js"></script>
+
 </body>
 </html>
