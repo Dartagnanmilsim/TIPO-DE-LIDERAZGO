@@ -1,129 +1,136 @@
 const questions = [
-"Me preocupo por el bienestar del equipo",
-"Escucho antes de decidir",
-"Mantengo armonía",
-"Resuelvo conflictos dialogando",
-"Genero confianza",
-"Apoyo personas",
-"Considero impacto emocional",
-"Valoro colaboración",
 
-"Decido con datos",
-"Planifico antes de actuar",
-"Analizo riesgos",
-"Cuido calidad",
-"Prefiero procesos claros",
-"Corrijo errores",
-"Trabajo con información compleja",
-"Busco eficiencia",
+  // Afable
+  { text: "Me preocupo por el bienestar emocional de mi equipo.", style: "Afable" },
+  { text: "Prefiero mantener un ambiente armonioso antes que confrontar.", style: "Afable" },
+  { text: "Escucho a los demás antes de tomar decisiones importantes.", style: "Afable" },
+  { text: "Las personas me consideran cercano y accesible.", style: "Afable" },
+  { text: "Soy paciente cuando alguien comete errores.", style: "Afable" },
+  { text: "Busco consenso antes de avanzar en proyectos importantes.", style: "Afable" },
+  { text: "Me enfoco en construir relaciones de confianza.", style: "Afable" },
+  { text: "Prefiero colaborar antes que competir.", style: "Afable" },
 
-"Decido rápido",
-"Me enfoco en metas",
-"Asumo riesgos",
-"Prefiero liderar",
-"Exijo rendimiento",
-"Me impaciento",
-"Priorizo resultados",
-"Actúo con determinación",
+  // Expresivo
+  { text: "Me gusta motivar a otros con ideas y visión de futuro.", style: "Expresivo" },
+  { text: "Disfruto liderar reuniones o hablar frente a grupos.", style: "Expresivo" },
+  { text: "Transmito entusiasmo cuando explico proyectos.", style: "Expresivo" },
+  { text: "Propongo nuevas ideas con frecuencia.", style: "Expresivo" },
+  { text: "Me siento cómodo siendo el centro de atención cuando es necesario.", style: "Expresivo" },
+  { text: "Inspiro a otros a pensar en grande.", style: "Expresivo" },
+  { text: "Prefiero entornos dinámicos y creativos.", style: "Expresivo" },
+  { text: "Mi energía suele contagiar a los demás.", style: "Expresivo" },
 
-"Motivo con entusiasmo",
-"Comunico ideas",
-"Inspiro cambios",
-"Disfruto presentar",
-"Genero ideas",
-"Influyo en otros",
-"Inicio proyectos",
-"Prefiero innovación"
+  // Analítico
+  { text: "Tomo decisiones basadas en datos y evidencia.", style: "Analítico" },
+  { text: "Me gusta planificar antes de actuar.", style: "Analítico" },
+  { text: "Presto atención a los detalles para evitar errores.", style: "Analítico" },
+  { text: "Prefiero procesos claros y organizados.", style: "Analítico" },
+  { text: "Me siento cómodo analizando información compleja.", style: "Analítico" },
+  { text: "Evalúo riesgos antes de decidir.", style: "Analítico" },
+  { text: "Soy exigente con la calidad del trabajo.", style: "Analítico" },
+  { text: "Analizo varias opciones antes de elegir una.", style: "Analítico" },
+
+  // Ejecutor
+  { text: "Me enfoco en lograr objetivos rápidamente.", style: "Ejecutor" },
+  { text: "Tomo decisiones con seguridad incluso bajo presión.", style: "Ejecutor" },
+  { text: "Prefiero actuar que analizar demasiado.", style: "Ejecutor" },
+  { text: "Me siento cómodo liderando situaciones difíciles.", style: "Ejecutor" },
+  { text: "Exijo alto desempeño de mi equipo.", style: "Ejecutor" },
+  { text: "Me frustra la lentitud o la indecisión.", style: "Ejecutor" },
+  { text: "Disfruto los retos y la competencia.", style: "Ejecutor" },
+  { text: "Voy directo al punto cuando comunico algo importante.", style: "Ejecutor" }
+
 ];
 
-const assessmentDiv = document.getElementById("assessment");
+const scale = ["Nunca", "Rara vez", "A veces", "Frecuentemente", "Siempre"];
 
-questions.forEach((q, i) => {
+let current = 0;
+let answers = [];
 
-    let div = document.createElement("div");
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
+const progressEl = document.getElementById("progress");
+const resultEl = document.getElementById("result");
 
-    div.innerHTML = `
-        <p>${i+1}. ${q}</p>
-        <select id="q${i}">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3" selected>3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-        </select>
-    `;
+function showQuestion() {
 
-    assessmentDiv.appendChild(div);
-});
+  const q = questions[current];
+  questionEl.innerText = q.text;
 
+  optionsEl.innerHTML = "";
 
-function calculate() {
+  scale.forEach((label, index) => {
 
-    let answers = [];
+    const btn = document.createElement("button");
+    btn.innerText = label;
 
-    for(let i=0;i<32;i++){
-        answers.push(parseInt(document.getElementById(`q${i}`).value));
-    }
+    btn.onclick = () => {
 
-    let amable = sum(answers.slice(0,8));
-    let analitico = sum(answers.slice(8,16));
-    let emprendedor = sum(answers.slice(16,24));
-    let expresivo = sum(answers.slice(24,32));
+      answers[current] = index + 1;
+      current++;
 
-    document.getElementById("results").classList.remove("hidden");
+      if (current < questions.length) {
+        showQuestion();
+      } else {
+        calculateResult();
+      }
 
-    document.getElementById("amableCard").innerHTML = "Amable: " + amable;
-    document.getElementById("analiticoCard").innerHTML = "Analítico: " + analitico;
-    document.getElementById("emprendedorCard").innerHTML = "Emprendedor: " + emprendedor;
-    document.getElementById("expresivoCard").innerHTML = "Expresivo: " + expresivo;
+      updateProgress();
+    };
 
-    createRadar(amable, analitico, emprendedor, expresivo);
-    createQuadrant(amable, analitico, emprendedor, expresivo);
+    optionsEl.appendChild(btn);
+  });
+
+  updateProgress();
 }
 
-
-function sum(arr){
-    return arr.reduce((a,b)=>a+b,0);
+function updateProgress() {
+  const percent = (current / questions.length) * 100;
+  progressEl.style.width = percent + "%";
 }
 
+function calculateResult() {
 
-function createRadar(a,b,c,d){
+  const scores = {
+    Afable: 0,
+    Expresivo: 0,
+    Analítico: 0,
+    Ejecutor: 0
+  };
 
-    new Chart(document.getElementById("radarChart"), {
-        type: 'radar',
-        data: {
-            labels: ['Amable','Analítico','Emprendedor','Expresivo'],
-            datasets: [{
-                label: 'Perfil',
-                data: [a,b,c,d]
-            }]
-        }
-    });
+  answers.forEach((value, index) => {
+    scores[questions[index].style] += value;
+  });
+
+  const dominant = Object.entries(scores)
+    .sort((a, b) => b[1] - a[1])[0][0];
+
+  showResult(dominant, scores);
 }
 
+function showResult(style, scores) {
 
-function createQuadrant(a,b,c,d){
+  questionEl.style.display = "none";
+  optionsEl.style.display = "none";
 
-    let x = d - b;
-    let y = a - c;
+  resultEl.classList.remove("hidden");
 
-    new Chart(document.getElementById("quadrantChart"), {
-        type: 'scatter',
-        data: {
-            datasets: [{
-                label: 'Perfil Liderazgo',
-                data: [{x:x, y:y}]
-            }]
-        },
-        options: {
-            scales: {
-                x: {
-                    title: { display: true, text: 'Procesos ← → Innovación'}
-                },
-                y: {
-                    title: { display: true, text: 'Personas ↑ ↓ Resultados'}
-                }
-            }
-        }
-    });
+  resultEl.innerHTML = `
+    <h2>Tu estilo predominante es:</h2>
+    <h3>${style}</h3>
+
+    <p><strong>Puntajes:</strong></p>
+    <ul>
+      <li>Afable: ${scores.Afable}</li>
+      <li>Expresivo: ${scores.Expresivo}</li>
+      <li>Analítico: ${scores.Analítico}</li>
+      <li>Ejecutor: ${scores.Ejecutor}</li>
+    </ul>
+
+    <button class="restart" onclick="location.reload()">
+      Repetir Test
+    </button>
+  `;
 }
+
+showQuestion();
