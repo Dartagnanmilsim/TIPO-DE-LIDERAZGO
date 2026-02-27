@@ -1,29 +1,31 @@
 const questions = [
   { text: "Me preocupo por el bienestar emocional de mi equipo.", style: "Afable" },
-  { text: "Prefiero mantener un ambiente armonioso antes que confrontar.", style: "Afable" },
-  { text: "Escucho antes de tomar decisiones.", style: "Afable" },
-  { text: "Soy paciente cuando alguien comete errores.", style: "Afable" },
+  { text: "Prefiero mantener armonía antes que confrontar.", style: "Afable" },
+  { text: "Escucho antes de decidir.", style: "Afable" },
+  { text: "Soy paciente con errores.", style: "Afable" },
 
   { text: "Tomo decisiones basadas en datos.", style: "Analitico" },
-  { text: "Me gusta planificar antes de actuar.", style: "Analitico" },
-  { text: "Analizo riesgos antes de decidir.", style: "Analitico" },
-  { text: "Soy exigente con la calidad.", style: "Analitico" },
+  { text: "Planifico antes de actuar.", style: "Analitico" },
+  { text: "Analizo riesgos.", style: "Analitico" },
+  { text: "Busco precisión.", style: "Analitico" },
 
-  { text: "Me enfoco en resultados rápidos.", style: "Emprendedor" },
-  { text: "Tomo decisiones bajo presión.", style: "Emprendedor" },
-  { text: "Disfruto retos y competencia.", style: "Emprendedor" },
+  { text: "Me enfoco en resultados.", style: "Emprendedor" },
+  { text: "Decido bajo presión.", style: "Emprendedor" },
+  { text: "Disfruto retos.", style: "Emprendedor" },
   { text: "Voy directo al punto.", style: "Emprendedor" },
 
-  { text: "Me gusta motivar a otros.", style: "Expresivo" },
+  { text: "Motivo a otros.", style: "Expresivo" },
   { text: "Transmito entusiasmo.", style: "Expresivo" },
-  { text: "Propongo nuevas ideas.", style: "Expresivo" },
-  { text: "Inspiro a pensar en grande.", style: "Expresivo" }
+  { text: "Genero ideas.", style: "Expresivo" },
+  { text: "Inspiro visión.", style: "Expresivo" }
 ];
 
 const scale = ["Nunca","Rara vez","A veces","Frecuentemente","Siempre"];
 
 let current = 0;
 let answers = [];
+let chartInstance;
+let generatedPrompt = "";
 
 const questionEl = document.getElementById("question");
 const optionsEl = document.getElementById("options");
@@ -32,9 +34,7 @@ const resultEl = document.getElementById("result");
 
 function showQuestion() {
 
-  const q = questions[current];
-  questionEl.innerText = q.text;
-
+  questionEl.innerText = questions[current].text;
   optionsEl.innerHTML = "";
 
   scale.forEach((label, index) => {
@@ -82,20 +82,20 @@ function calculateResult() {
   showResult(scores, dominant);
 }
 
-function getAnalysis(style){
+function analysisText(style){
 
-  const analysis = {
+  const data = {
 
-    Afable: "Tu liderazgo se orienta a las personas, confianza y estabilidad emocional del equipo.",
+Afable: "Liderazgo orientado a personas, confianza y cohesión emocional del equipo.",
 
-    Analitico: "Tu liderazgo se basa en lógica, planificación y decisiones racionales.",
+Analitico: "Liderazgo basado en lógica, estructura, planificación y análisis.",
 
-    Emprendedor: "Tu liderazgo está enfocado en acción, resultados y logro de objetivos.",
+Emprendedor: "Liderazgo enfocado en resultados, acción rápida y logro de objetivos.",
 
-    Expresivo: "Tu liderazgo se caracteriza por inspiración, comunicación y visión."
+Expresivo: "Liderazgo inspirador, comunicativo y orientado a visión."
   };
 
-  return analysis[style];
+  return data[style];
 }
 
 function buildPrompt(style){
@@ -104,65 +104,95 @@ return `Actúa como coach ejecutivo experto.
 
 Mi estilo de liderazgo predominante es ${style}.
 
-Quiero un análisis profundo que incluya:
-
-- Fortalezas naturales
-- Riesgos y puntos ciegos
-- Cómo lidero equipos
-- Cómo me perciben
-- Recomendaciones para evolucionar
-- Qué tipo de roles de liderazgo son ideales
-
-Entrega un análisis profesional.`;
+Quiero un análisis profundo que incluya fortalezas, riesgos, evolución y recomendaciones.`;
 
 }
 
 function showResult(scores, dominant){
 
-  questionEl.style.display = "none";
-  optionsEl.style.display = "none";
+  document.getElementById("questionContainer").style.display = "none";
 
   resultEl.classList.remove("hidden");
 
   resultEl.innerHTML = `
   
-  <h2>Resultado: ${dominant}</h2>
-
   <div class="result-box">
-    <p>${getAnalysis(dominant)}</p>
+
+    <h2>Resultado: ${dominant}</h2>
+
+    <p>${analysisText(dominant)}</p>
 
     <canvas id="chart"></canvas>
 
-    <h3>Prompt personalizado</h3>
-    <div class="copy-box" id="promptBox">${buildPrompt(dominant)}</div>
+    <button class="action-btn" onclick="copyPrompt()">
+      Copiar análisis para ChatGPT
+    </button>
 
-    <button class="copy" onclick="copyPrompt()">Copiar Prompt</button>
+    <button class="action-btn" onclick="downloadPDF()">
+      Descargar PDF
+    </button>
 
   </div>
   
   `;
+
+  generatedPrompt = buildPrompt(dominant);
 
   createChart(scores);
 }
 
 function createChart(scores){
 
-  new Chart(document.getElementById("chart"), {
+  const ctx = document.getElementById("chart");
+
+  if(chartInstance) chartInstance.destroy();
+
+  chartInstance = new Chart(ctx, {
     type: 'radar',
     data: {
       labels: Object.keys(scores),
       datasets: [{
-        label: 'Resultado',
-        data: Object.values(scores)
+        label: 'Perfil de Liderazgo',
+        data: Object.values(scores),
+        backgroundColor: 'rgba(79,70,229,0.2)',
+        borderColor: '#4f46e5',
+        pointBackgroundColor: '#4f46e5'
       }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        r: {
+          beginAtZero: true
+        }
+      }
     }
   });
 }
 
 function copyPrompt(){
-  const text = document.getElementById("promptBox").innerText;
-  navigator.clipboard.writeText(text);
+  navigator.clipboard.writeText(generatedPrompt);
   alert("Prompt copiado");
+}
+
+async function downloadPDF(){
+
+  const { jsPDF } = window.jspdf;
+
+  const doc = new jsPDF();
+
+  doc.setFontSize(18);
+  doc.text("Resultado de Estilo de Liderazgo", 20, 20);
+
+  doc.setFontSize(14);
+  doc.text(resultEl.innerText, 20, 40);
+
+  doc.save("resultado_liderazgo.pdf");
 }
 
 showQuestion();
